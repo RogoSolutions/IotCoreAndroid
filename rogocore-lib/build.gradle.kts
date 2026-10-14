@@ -72,8 +72,8 @@ afterEvaluate {
                     from(releaseComponent)
                 }
 
-                groupId = "com.github.xtung2404"
-                artifactId = "RogoCoreLib"
+                groupId = "com.github.RogoSolutions"
+                artifactId = "IotCoreAndroid"
                 version = "1.0.3.43" // Tăng version để JitPack nhận bản mới nhất
             }
         }
