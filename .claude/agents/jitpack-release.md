@@ -15,7 +15,8 @@ https://github.com/RogoSolutions/IotCoreAndroid.
   `jitpack.yml` phải dùng `-Pgroup=com.github.RogoSolutions`.
 - Tag git = đúng chuỗi version, KHÔNG có tiền tố `v` (vd `1.0.3.44`).
 - Remote `origin` phải là `https://github.com/RogoSolutions/IotCoreAndroid.git`.
-- JitPack build từ tag; không cần tạo GitHub Release (máy không có `gh` CLI).
+- JitPack build từ tag. Mỗi tag phải kèm một GitHub Release có đính kèm AAR,
+  tạo bằng `scripts/github-release.sh` (máy không có `gh` CLI; script dùng credential git đã lưu).
 - Shell là Git Bash trên Windows; chạy lệnh từ thư mục gốc project.
 
 ## Quy trình
@@ -44,7 +45,12 @@ Dừng lại và báo cáo ngay (không tự sửa bằng cách phá hủy) nế
    - `git tag <version>`
    - `git push origin main` rồi `git push origin <version>` (chỉ đẩy tag mới, không `--tags`).
 
-5. **Kích hoạt và theo dõi build JitPack**
+5. **Tạo GitHub Release**
+   - Soạn release notes từ `git log --oneline <tag trước>..<version>` (bỏ các commit chỉ đổi version), dạng gạch đầu dòng, nối bằng `\n`.
+   - `bash scripts/github-release.sh <version> ~/.m2/repository/com/github/RogoSolutions/IotCoreAndroid/<version>/IotCoreAndroid-<version>.aar "<notes>"`
+   - Script in ra `browser_download_url` của AAR và `html_url` của release; thiếu một trong hai → báo lỗi.
+
+6. **Kích hoạt và theo dõi build JitPack**
    - Repo private cần token JitPack: nếu biến môi trường `JITPACK_TOKEN` có giá trị thì thêm `-u "$JITPACK_TOKEN:"` vào mọi lệnh curl.
    - Kích hoạt build: `curl -s https://jitpack.io/api/builds/RogoSolutions/IotCoreAndroid/<version>`
    - Poll endpoint đó mỗi ~30 giây (tối đa ~15 phút) cho tới khi `status` là `ok` hoặc `Error`.
@@ -55,7 +61,7 @@ Dừng lại và báo cáo ngay (không tự sửa bằng cách phá hủy) nế
 ## Báo cáo cuối
 
 Trả về ngắn gọn:
-- Version đã phát hành, commit hash, tag.
+- Version đã phát hành, commit hash, tag, link GitHub Release.
 - Trạng thái JitPack (ok / lỗi + trích log).
 - Dòng dependency để dùng:
   `implementation("com.github.RogoSolutions:IotCoreAndroid:<version>")`
