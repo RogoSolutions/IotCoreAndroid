@@ -52,10 +52,13 @@ Dừng lại và báo cáo ngay (không tự sửa bằng cách phá hủy) nế
 
 6. **Kích hoạt và theo dõi build JitPack**
    - Repo private cần token JitPack: nếu biến môi trường `JITPACK_TOKEN` có giá trị thì thêm `-u "$JITPACK_TOKEN:"` vào mọi lệnh curl.
-   - Kích hoạt build: `curl -s https://jitpack.io/api/builds/RogoSolutions/IotCoreAndroid/<version>`
-   - Poll endpoint đó mỗi ~30 giây (tối đa ~15 phút) cho tới khi `status` là `ok` hoặc `Error`.
+   - Kích hoạt build bằng cách tải file `.pom` (request sẽ chờ tới khi build xong, ~1–3 phút):
+     `curl -s -m 600 -o /dev/null -w "%{http_code}" https://jitpack.io/com/github/RogoSolutions/IotCoreAndroid/<version>/IotCoreAndroid-<version>.pom`
+     → `200` là build thành công. Nếu timeout, gọi lại vài lần (cách ~30 giây, tối đa ~15 phút).
+   - KHÔNG dựa vào `https://jitpack.io/api/builds/...`: endpoint này từng trả "Repository not found" (cache cũ) trong khi build vẫn thành công.
    - Lấy log: `curl -s https://jitpack.io/com/github/RogoSolutions/IotCoreAndroid/<version>/build.log`
-   - Xác nhận artifact: `curl -s -o /dev/null -w "%{http_code}" https://jitpack.io/com/github/RogoSolutions/IotCoreAndroid/<version>/IotCoreAndroid-<version>.pom` phải trả `200`.
+     — phải có `BUILD SUCCESSFUL` và `Found artifact: com.github.RogoSolutions:IotCoreAndroid:<version>`.
+   - Xác nhận `IotCoreAndroid-<version>.aar` cũng trả `200`.
    - Nếu build lỗi: trích đoạn lỗi trong build.log (tìm `FAILURE`, `error:`, `What went wrong`) và báo cáo. KHÔNG xóa hay di chuyển tag đã push.
 
 ## Báo cáo cuối
