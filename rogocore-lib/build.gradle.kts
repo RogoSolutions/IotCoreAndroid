@@ -74,7 +74,7 @@ afterEvaluate {
 
                 groupId = "com.github.RogoSolutions"
                 artifactId = "IotCoreAndroid"
-                version = "1.0.3.45" // Tăng version để JitPack nhận bản mới nhất
+                version = "1.0.3.46" // Tăng version để JitPack nhận bản mới nhất
             }
         }
     }
